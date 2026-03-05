@@ -28,3 +28,6 @@ Thumbs.db
 
 # Lambda packages
 *.zip
+
+# Scraped Docs JSON
+docs/scraped/

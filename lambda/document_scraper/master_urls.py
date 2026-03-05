@@ -137,7 +137,6 @@ VERSE_API_URLS = [
     "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/animation/playanimation",
     # Verse.org - Simulation (core player/game objects)
     "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/simulation/player",
-    "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/simulation/playspace",
 ]
 
 
