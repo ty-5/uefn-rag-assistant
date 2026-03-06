@@ -65,6 +65,44 @@ def wait_for_content(driver, timeout=30):
             return True
     return False
 
+def normalize_text(text):
+    """
+    Fix fragmented text caused by inline HTML elements
+    being split onto separate lines.
+    Rejoins lines that are clearly part of the same sentence.
+    """
+    lines = text.split("\n")
+    normalized = []
+    i = 0
+
+    while i < len(lines):
+        line = lines[i].strip()
+
+        if not line:
+            normalized.append("")
+            i += 1
+            continue
+
+        while (
+            i + 1 < len(lines) and
+            len(line) < 60 and
+            not line.endswith(".") and
+            not line.endswith(":") and
+            not line.isupper() and
+            len(lines[i + 1].strip()) > 0
+        ):
+            next_line = lines[i + 1].strip()
+            if next_line[0].isupper() and line[-1] not in ",;({[":
+                break
+            line = line + " " + next_line
+            i += 1
+
+        normalized.append(line)
+        i += 1
+
+    result = "\n".join(normalized)
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result
 
 def extract_content(driver, url, category):
     """
@@ -118,6 +156,9 @@ def extract_content(driver, url, category):
         # Remove lines containing the site title suffix
         lines = [l for l in lines if "Epic Developer Community" not in l]
         clean_text = "\n".join(lines)
+
+    # Normalize fragmented text
+    clean_text = normalize_text(clean_text)
 
     return {
         "url": url,
