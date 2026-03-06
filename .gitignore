@@ -29,5 +29,29 @@ Thumbs.db
 # Lambda packages
 *.zip
 
+# Lambda build artifacts
+lambda/document_processor/document_processor.zip
+lambda/embedding_generator/embedding_generator.zip
+
+# Lambda installed dependencies
+lambda/document_processor/bin/
+lambda/document_processor/tiktoken*/
+lambda/document_processor/beautifulsoup4*/
+lambda/document_processor/bs4/
+lambda/document_processor/requests*/
+lambda/document_processor/certifi*/
+lambda/document_processor/charset_normalizer*/
+lambda/document_processor/idna*/
+lambda/document_processor/regex*/
+lambda/document_processor/soupsieve*/
+lambda/document_processor/typing_extensions*/
+lambda/document_processor/urllib3*/
+lambda/document_processor/__pycache__/
+lambda/embedding_generator/psycopg2*/
+lambda/embedding_generator/__pycache__/
+
 # Scraped Docs JSON
 docs/scraped/
+
+lambda/document_processor/*.pyd
+lambda/document_processor/typing_extensions.py
