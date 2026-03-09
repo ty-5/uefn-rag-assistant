@@ -1,13 +1,11 @@
-import json
+ï»¿import json
 import boto3
 import psycopg2
 import os
 
-# AWS clients - initialized at module level for warm reuse
 bedrock = boto3.client("bedrock-runtime", region_name=os.environ.get("BEDROCK_REGION", "us-east-1"))
 secretsmanager = boto3.client("secretsmanager", region_name="us-east-1")
 
-# Cache DB credentials across warm invocations
 _db_credentials = None
 
 def get_db_credentials():
@@ -27,7 +25,8 @@ def get_db_connection():
         dbname=creds["dbname"],
         user=creds["username"],
         password=creds["password"],
-        connect_timeout=10
+        connect_timeout=10,
+        sslmode='require'
     )
 
 def generate_embedding(text):
@@ -53,7 +52,7 @@ def upsert_document(conn, chunk):
             chunk["content"],
             json.dumps(chunk["embedding"]),
             json.dumps(chunk.get("metadata", {})),
-            chunk.get("source_type", "unknown"),
+            chunk.get("source_type") or chunk.get("metadata", {}).get("category", "unknown"),
             chunk.get("source_url", "")
         ))
     conn.commit()
@@ -75,11 +74,9 @@ def lambda_handler(event, context):
                 chunk_id = body.get("chunk_id", "unknown")
                 print(f"Processing chunk: {chunk_id}")
 
-                # Generate embedding
                 embedding = generate_embedding(body["content"])
                 body["embedding"] = embedding
 
-                # Store in database
                 upsert_document(conn, body)
                 processed += 1
                 print(f"Successfully embedded chunk: {chunk_id}")
@@ -95,5 +92,5 @@ def lambda_handler(event, context):
         if conn:
             conn.close()
 
-    print(f"Batch complete — processed: {processed}, failed: {failed}")
+    print(f"Batch complete - processed: {processed}, failed: {failed}")
     return {"processed": processed, "failed": failed}
