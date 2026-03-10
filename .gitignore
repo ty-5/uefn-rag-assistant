@@ -57,3 +57,10 @@ lambda/document_processor/*.pyd
 lambda/document_processor/typing_extensions.py
 
 *.so
+
+payload.json
+response.json
+test_request.json
+
+lambda/query_handler/package/
+lambda/query_handler/__pycache__/
